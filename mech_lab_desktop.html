@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PolyTest Lab — Desktop</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#f4f1eb; --bg2:#ede9e0; --sur:#fff; --sur2:#f9f7f3;
+  --bor:#ddd8cc; --bor2:#c8c2b4;
+  --ink:#1a1712; --ink2:#5a5348; --ink3:#9a9088;
+  --acc:#c4440a; --suc:#2d7a45; --war:#b37a00; --dan:#b02020; --inf:#1a5f8a;
+}
+
+* {margin:0;padding:0;box-sizing:border-box}
+body {font-family:'IBM Plex Sans',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+/* DESKTOP LAYOUT */
+.desktop {display:flex;height:100vh}
+
+/* SIDEBAR */
+.sidebar {width:280px;background:var(--ink);display:flex;flex-direction:column;position:fixed;height:100vh;z-index:100}
+.logo {padding:20px 24px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:12px}
+.logo-mark {width:36px;height:36px;background:var(--acc);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:#fff}
+.logo-txt {font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px}
+.logo-txt span {color:#f0a070}
+
+.nav-menu {flex:1;padding:16px 0;display:flex;flex-direction:column;gap:4px}
+.nav-item {display:flex;align-items:center;gap:12px;padding:12px 24px;color:rgba(255,255,255,.6);cursor:pointer;transition:all .2s;border-radius:0}
+.nav-item:hover {background:rgba(255,255,255,.08);color:rgba(255,255,255,.9)}
+.nav-item.active {background:var(--acc);color:#fff}
+.nav-item.active:hover {background:var(--acc)}
+.nav-icon {width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:16px}
+.nav-label {font-size:14px;font-weight:500}
+
+.admin-section {padding:16px 24px;border-top:1px solid rgba(255,255,255,.1)}
+.admin-user {display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.4);font-size:12px;margin-bottom:8px}
+.admin-btn {width:100%;padding:8px 12px;background:rgba(196,68,10,.2);border:1px solid rgba(196,68,10,.4);border-radius:6px;color:var(--acc);font-size:12px;font-weight:600;cursor:pointer;text-align:center}
+.admin-btn.active {background:var(--acc);color:#fff}
+
+/* MAIN CONTENT */
+.main-content {margin-left:280px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* HEADER */
+.header {background:var(--sur);border-bottom:2px solid var(--bor);padding:16px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
+.header-left h1 {font-size:24px;font-weight:700;margin-bottom:4px}
+.header-left p {font-size:12px;color:var(--ink3);font-family:'IBM Plex Mono',monospace}
+.header-right {display:flex;gap:12px}
+.header-btn {padding:8px 16px;border-radius:6px;border:1px solid var(--bor2);background:var(--sur2);color:var(--ink2);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.header-btn:hover {background:var(--acc);color:#fff;border-color:var(--acc)}
+
+/* ADMIN BAR */
+.admin-bar {background:var(--acc);color:#fff;padding:8px 32px;font-size:12px;font-weight:700;display:none;justify-content:space-between;align-items:center}
+.admin-bar.active {display:flex}
+
+/* CONTENT AREA */
+.content {flex:1;padding:32px;display:none}
+.content.active {display:block}
+
+/* DASHBOARD GRID */
+.dash-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-bottom:32px}
+.dash-card {background:var(--sur);border:1px solid var(--bor);border-radius:12px;padding:24px}
+.dash-card h3 {font-size:16px;font-weight:700;margin-bottom:16px}
+
+/* STATS GRID */
+.stats-grid {display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-bottom:32px}
+.stat-card {background:var(--sur);border:1px solid var(--bor);border-radius:12px;padding:20px;text-align:center}
+.stat-number {font-size:32px;font-weight:700;font-family:'IBM Plex Mono',monospace;margin-bottom:8px}
+.stat-label {font-size:12px;color:var(--ink3);text-transform:uppercase;letter-spacing:.5px}
+
+/* WORKFLOW DIAGRAM */
+.workflow {background:var(--sur);border:1px solid var(--bor);border-radius:12px;padding:24px;margin-bottom:32px}
+.workflow h3 {font-size:16px;font-weight:700;margin-bottom:16px}
+.workflow-steps {display:flex;justify-content:space-between;align-items:center}
+.workflow-step {display:flex;flex-direction:column;align-items:center;gap:8px;flex:1}
+.step-icon {width:48px;height:48px;border-radius:50%;background:var(--sur2);border:2px solid var(--bor2);display:flex;align-items:center;justify-content:center;font-size:20px;transition:all .3s}
+.step-label {font-size:12px;font-weight:600;text-align:center;color:var(--ink2)}
+.step-count {font-size:10px;color:var(--ink3);font-family:'IBM Plex Mono',monospace}
+.workflow-arrow {font-size:24px;color:var(--bor2);margin:0 16px}
+.step-active .step-icon {background:var(--acc);border-color:var(--acc);color:#fff}
+
+/* CARDS GRID */
+.cards-grid {display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:20px}
+.order-card {background:var(--sur);border:1px solid var(--bor);border-radius:12px;overflow:hidden;cursor:pointer;transition:all .2s}
+.order-card:hover {box-shadow:0 8px 24px rgba(0,0,0,.1);transform:translateY(-2px)}
+
+.card-header {padding:16px 20px;border-bottom:1px solid var(--bor);display:flex;justify-content:between;align-items:flex-start}
+.card-title {font-size:15px;font-weight:700;margin-bottom:4px}
+.card-id {font-size:11px;color:var(--ink3);font-family:'IBM Plex Mono',monospace}
+.card-status {padding:4px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+
+.card-body {padding:16px 20px}
+.card-meta {display:flex;flex-wrap:wrap;gap:12px;margin-bottom:12px}
+.meta-item {display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2)}
+.meta-icon {width:16px;text-align:center}
+
+.card-tags {display:flex;gap:8px;margin-bottom:12px}
+.tag {padding:3px 8px;border-radius:4px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.tag-material {background:#fef3e2;color:#8a5500;border:1px solid #f0d090}
+.tag-product {background:#e8f0fe;color:#1a4a8a;border:1px solid #b0c8f0}
+.tag-warehouse {background:#fff0e6;color:#b04600;border:1px solid #f0b080}
+.tag-test {background:#e6f7f1;color:#0f5329;border:1px solid #90c8a8}
+
+.card-footer {padding:12px 20px;background:var(--sur2);border-top:1px solid var(--bor);display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--ink3)}
+
+/* STATUS COLORS */
+.st-pending {color:var(--war)} .st-accepted {color:var(--suc)} .st-testing {color:var(--inf)} .st-done {color:var(--acc)} .st-rejected {color:var(--dan)}
+.st-warehouse {color:var(--war)} .st-control {color:var(--inf)} .st-report {color:var(--suc)}
+
+/* FILTERS */
+.filters {display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.filter-btn {padding:8px 16px;border:1px solid var(--bor2);border-radius:6px;background:var(--sur);color:var(--ink2);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s}
+.filter-btn:hover {border-color:var(--acc)}
+.filter-btn.active {background:var(--acc);color:#fff;border-color:var(--acc)}
+
+/* MODAL */
+.modal-overlay {position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:1000;display:none;align-items:center;justify-content:center;padding:32px}
+.modal-overlay.active {display:flex}
+.modal {background:var(--sur);border-radius:16px;width:90%;max-width:800px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 48px rgba(0,0,0,.3)}
+
+.modal-header {padding:24px 32px;border-bottom:1px solid var(--bor);display:flex;justify-content:space-between;align-items:flex-start}
+.modal-title {font-size:20px;font-weight:700}
+.modal-subtitle {font-size:12px;color:var(--ink3);margin-top:4px}
+.modal-close {width:32px;height:32px;border-radius:8px;border:1px solid var(--bor);background:var(--sur2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--ink2)}
+
+.modal-body {padding:24px 32px}
+.modal-section {margin-bottom:24px}
+.modal-section:last-child {margin-bottom:0}
+.section-title {font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--ink3);margin-bottom:12px}
+
+.info-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.info-item {background:var(--sur2);border:1px solid var(--bor);border-radius:8px;padding:12px}
+.info-label {font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);margin-bottom:4px}
+.info-value {font-size:13px;font-weight:600}
+
+.modal-actions {padding:24px 32px;border-top:1px solid var(--bor);display:flex;gap:12px}
+.modal-btn {flex:1;padding:12px 24px;border-radius:8px;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+.btn-primary {background:var(--acc);color:#fff}
+.btn-secondary {background:var(--sur2);color:var(--ink2);border:1px solid var(--bor2)}
+.btn-success {background:var(--suc);color:#fff}
+.btn-danger {background:var(--dan);color:#fff}
+
+/* FORMS */
+.form-grid {display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px}
+.form-section {background:var(--sur);border:1px solid var(--bor);border-radius:12px;overflow:hidden}
+.form-header {padding:16px 20px;background:var(--ink);color:#fff;display:flex;align-items:center;gap:12px}
+.form-number {width:28px;height:28px;border-radius:50%;background:var(--acc);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.form-title {font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.form-body {padding:20px}
+
+.field-group {margin-bottom:16px}
+.field-label {font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--ink3);margin-bottom:6px;font-weight:600}
+.field-input {width:100%;padding:12px;border:1px solid var(--bor2);border-radius:8px;font-size:13px;background:var(--sur2);color:var(--ink);transition:border-color .2s}
+.field-input:focus {outline:none;border-color:var(--acc);box-shadow:0 0 0 3px rgba(196,68,10,.1)}
+.field-textarea {height:80px;resize:vertical}
+
+.submit-btn {width:100%;padding:16px;background:var(--acc);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:24px}
+.submit-btn:hover {background:#a63808}
+
+/* LOGIN SCREEN */
+.login-screen {position:fixed;inset:0;background:var(--ink);display:flex;align-items:center;justify-content:center;z-index:2000}
+.login-screen.hidden {display:none}
+.login-form {width:100%;max-width:400px;padding:48px;text-align:center}
+.login-logo {width:64px;height:64px;background:var(--acc);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 24px;font-size:24px;font-weight:700;color:#fff}
+.login-title {font-size:28px;font-weight:700;color:#fff;margin-bottom:8px}
+.login-subtitle {font-size:14px;color:rgba(255,255,255,.6);margin-bottom:32px}
+.login-field {width:100%;padding:16px;margin-bottom:16px;border:1px solid rgba(255,255,255,.2);border-radius:8px;background:rgba(255,255,255,.05);color:#fff;font-size:14px}
+.login-field::placeholder {color:rgba(255,255,255,.4)}
+.login-btn {width:100%;padding:16px;background:var(--acc);border:none;border-radius:8px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:16px}
+.login-error {color:#f08080;font-size:12px;margin-bottom:16px;display:none}
+.login-cancel {color:rgba(255,255,255,.6);font-size:12px;cursor:pointer;text-decoration:underline}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+  .cards-grid {grid-template-columns:repeat(auto-fill,minmax(320px,1fr))}
+  .form-grid {grid-template-columns:1fr}
+}
+
+@media (max-width: 768px) {
+  .sidebar {transform:translateX(-100%)}
+  .main-content {margin-left:0}
+  .content {padding:20px}
+  .stats-grid {grid-template-columns:repeat(2,1fr)}
+}
+
+/* ANIMATIONS */
+@keyframes fadeIn {from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.content.active {animation:fadeIn .3s ease}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div class="login-screen hidden" id="loginScreen">
+  <div class="login-form">
+    <div class="login-logo">AD</div>
+    <h1 class="login-title">Admin Paneli</h1>
+    <p class="login-subtitle">PolyTest Laboratoriya İdarəetmə Sistemi</p>
+    <input type="text" class="login-field" id="loginUser" placeholder="İstifadəçi adı" autocomplete="off">
+    <input type="password" class="login-field" id="loginPass" placeholder="Şifrə" onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="login-error" id="loginError">⚠ Yanlış giriş məlumatları</div>
+    <button class="login-btn" onclick="doLogin()">Daxil ol</button>
+    <div class="login-cancel" onclick="cancelLogin()">Ləğv et</div>
+  </div>
+</div>
+
+<!-- DESKTOP LAYOUT -->
+<div class="desktop">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">PT</div>
+      <div class="logo-txt">Poly<span>Test</span></div>
+    </div>
+    
+    <div class="nav-menu">
+      <div class="nav-item active" onclick="showView('dashboard')" id="nav-dashboard">
+        <div class="nav-icon">📊</div>
+        <div class="nav-label">Dashboard</div>
+      </div>
+      <div class="nav-item" onclick="showView('orders')" id="nav-orders">
+        <div class="nav-icon">📋</div>
+        <div class="nav-label">Sifarişlər</div>
+      </div>
+      <div class="nav-item" onclick="showView('warehouse')" id="nav-warehouse">
+        <div class="nav-icon">📦</div>
+        <div class="nav-label">Anbar Sorğuları</div>
+      </div>
+      <div class="nav-item" onclick="showView('inspection')" id="nav-inspection">
+        <div class="nav-icon">🔍</div>
+        <div class="nav-label">Təftiş Nəzarəti</div>
+      </div>
+      <div class="nav-item" onclick="showView('results')" id="nav-results">
+        <div class="nav-icon">🔬</div>
+        <div class="nav-label">Nəticələr</div>
+      </div>
+      <div class="nav-item" onclick="showView('lab')" id="nav-lab">
+        <div class="nav-icon">🏭</div>
+        <div class="nav-label">Laboratoriya</div>
+      </div>
+      <div class="nav-item" onclick="showView('admin')" id="nav-admin" style="display:none">
+        <div class="nav-icon">⚙</div>
+        <div class="nav-label">Admin Panel</div>
+      </div>
+    </div>
+    
+    <div class="admin-section">
+      <div class="admin-user">👤 Qonaq istifadəçi</div>
+      <div class="admin-btn" onclick="openLogin()" id="adminToggle">Admin Girişi</div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-content">
+    <!-- ADMIN BAR -->
+    <div class="admin-bar" id="adminBar">
+      <span>🔐 Admin rejimi aktiv</span>
+      <span onclick="logout()" style="cursor:pointer">Çıxış ✕</span>
+    </div>
+
+    <!-- HEADER -->
+    <div class="header">
+      <div class="header-left">
+        <h1 id="pageTitle">Dashboard</h1>
+        <p id="pageSubtitle">Mexaniki Fiziki Laboratoriya İdarəetmə Sistemi</p>
+      </div>
+      <div class="header-right">
+        <div class="header-btn" onclick="showNotifications()">🔔 Bildirişlər</div>
+        <div class="header-btn" onclick="showView('new-order')">➕ Yeni Sifariş</div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD VIEW -->
+    <div class="content active" id="view-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-number st-pending">5</div>
+          <div class="stat-label">Gözləyən</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number st-testing">8</div>
+          <div class="stat-label">Sınaqda</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number st-done">12</div>
+          <div class="stat-label">Hazır</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number st-rejected">2</div>
+          <div class="stat-label">Rədd</div>
+        </div>
+      </div>
+
+      <div class="workflow">
+        <h3>İş Axını Vəziyyəti</h3>
+        <div class="workflow-steps">
+          <div class="workflow-step">
+            <div class="step-icon">📦</div>
+            <div class="step-label">Anbar Sorğu</div>
+            <div class="step-count">4 yeni</div>
+          </div>
+          <div class="workflow-arrow">→</div>
+          <div class="workflow-step step-active">
+            <div class="step-icon">🔍</div>
+            <div class="step-label">Texniki Nəzarət</div>
+            <div class="step-count">3 hazırlanır</div>
+          </div>
+          <div class="workflow-arrow">→</div>
+          <div class="workflow-step">
+            <div class="step-icon">🧪</div>
+            <div class="step-label">Sınaq Tələbi</div>
+            <div class="step-count">5 laboratoriyada</div>
+          </div>
+          <div class="workflow-arrow">→</div>
+          <div class="workflow-step">
+            <div class="step-icon">📋</div>
+            <div class="step-label">Hesabat</div>
+            <div class="step-count">2 hazır</div>
+          </div>
+          <div class="workflow-arrow">→</div>
+          <div class="workflow-step">
+            <div class="step-icon">✅</div>
+            <div class="step-label">Nəzarət Aktı</div>
+            <div class="step-count">7 tamamlandı</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="dash-card">
+          <h3>Son Sifarişlər</h3>
+          <div id="recentOrders">Yüklənir...</div>
+        </div>
+        <div class="dash-card">
+          <h3>Aktiv Təftiş Sorğuları</h3>
+          <div id="activeInspections">Yüklənir...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS VIEW -->
+    <div class="content" id="view-orders">
+      <div class="filters" id="orderFilters">
+        <div class="filter-btn active" onclick="filterOrders('all',this)">Hamısı</div>
+        <div class="filter-btn" onclick="filterOrders('pending',this)">Gözləyir</div>
+        <div class="filter-btn" onclick="filterOrders('accepted',this)">Qəbul</div>
+        <div class="filter-btn" onclick="filterOrders('testing',this)">Sınaqda</div>
+        <div class="filter-btn" onclick="filterOrders('done',this)">Hazır</div>
+        <div class="filter-btn" onclick="filterOrders('rejected',this)">Rədd</div>
+      </div>
+      <div class="cards-grid" id="ordersGrid"></div>
+    </div>
+
+    <!-- WAREHOUSE VIEW -->
+    <div class="content" id="view-warehouse">
+      <div class="filters">
+        <div class="filter-btn active" onclick="filterWarehouse('all',this)">Hamısı</div>
+        <div class="filter-btn" onclick="filterWarehouse('warehouse',this)">Anbar</div>
+        <div class="filter-btn" onclick="filterWarehouse('control',this)">T.Nəzarət</div>
+        <div class="filter-btn" onclick="filterWarehouse('testing',this)">Sınaqda</div>
+        <div class="filter-btn" onclick="filterWarehouse('report',this)">Hesabat</div>
+        <div class="filter-btn" onclick="filterWarehouse('done',this)">Tamamlandı</div>
+      </div>
+      <div class="cards-grid" id="warehouseGrid"></div>
+    </div>
+
+    <!-- INSPECTION VIEW -->
+    <div class="content" id="view-inspection">
+      <div class="cards-grid" id="inspectionGrid"></div>
+    </div>
+
+    <!-- RESULTS VIEW -->
+    <div class="content" id="view-results">
+      <div class="cards-grid" id="resultsGrid"></div>
+    </div>
+
+    <!-- LAB VIEW -->
+    <div class="content" id="view-lab">
+      <div class="dash-grid">
+        <div class="dash-card">
+          <h3>Laboratoriya Məlumatları</h3>
+          <p><strong>PolyTest Laboratoriyası</strong><br>
+          Mexaniki Fiziki Sınaq Mərkəzi<br>
+          📍 Sumqayıt, Kimya Sənaye Sahəsi</p>
+        </div>
+        <div class="dash-card">
+          <h3>Statistika</h3>
+          <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);gap:16px">
+            <div style="text-align:center">
+              <div style="font-size:24px;font-weight:700;color:var(--acc)">19</div>
+              <div style="font-size:10px;color:var(--ink3)">Bu gün</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:24px;font-weight:700;color:var(--acc)">342</div>
+              <div style="font-size:10px;color:var(--ink3)">Bu ay</div>
+            </div>
+            <div style="text-align:center">
+              <div style="font-size:24px;font-weight:700;color:var(--acc)">97%</div>
+              <div style="font-size:10px;color:var(--ink3)">Vaxtında</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN VIEW -->
+    <div class="content" id="view-admin">
+      <div class="dash-card">
+        <h3>Admin Panel</h3>
+        <p>Admin funksiyaları burada olacaq...</p>
+      </div>
+    </div>
+
+    <!-- NEW ORDER VIEW -->
+    <div class="content" id="view-new-order">
+      <div class="form-grid">
+        <div class="form-section">
+          <div class="form-header">
+            <div class="form-number">1</div>
+            <div class="form-title">Sifarişçi Məlumatları</div>
+          </div>
+          <div class="form-body">
+            <div class="field-group">
+              <div class="field-label">Adı Soyadı *</div>
+              <input class="field-input" placeholder="Əli Hüseynov">
+            </div>
+            <div class="field-group">
+              <div class="field-label">Təşkilat *</div>
+              <input class="field-input" placeholder="Şirkətin adı">
+            </div>
+            <div class="field-group">
+              <div class="field-label">E-poçt</div>
+              <input class="field-input" type="email" placeholder="email@domain.az">
+            </div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="form-header">
+            <div class="form-number">2</div>
+            <div class="form-title">Nümunə Məlumatları</div>
+          </div>
+          <div class="form-body">
+            <div class="field-group">
+              <div class="field-label">Nümunənin adı *</div>
+              <input class="field-input" placeholder="PP Kopolimer Qranulat">
+            </div>
+            <div class="field-group">
+              <div class="field-label">İstehsalçı *</div>
+              <input class="field-input" placeholder="Şirkət adı">
+            </div>
+            <div class="field-group">
+              <div class="field-label">Partiya nömrəsi *</div>
+              <input class="field-input" placeholder="PT-2024-001">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <button class="submit-btn" onclick="showMessage('Sifariş göndərildi!')">Sifarişi Göndər</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle">Title</div>
+        <div class="modal-subtitle" id="modalSubtitle">Subtitle</div>
+      </div>
+      <div class="modal-close" onclick="closeModal()">✕</div>
+    </div>
+    <div class="modal-body" id="modalBody">Content</div>
+    <div class="modal-actions" id="modalActions"></div>
+  </div>
+</div>
+
+<script>
+// Sample data
+const ORDERS = {
+  'ORD-2601': {id:'ORD-2601',status:'pending',name:'PP Kopolimer Qranulat',company:'Sumqayıt Kimya',date:'2026-03-18',tests:4,customer:'Əli Hüseynov',phone:'+994 55 123 45 67',email:'a.huseynov@sumqayitkimya.az'},
+  'ORD-2602': {id:'ORD-2602',status:'testing',name:'LDPE Plənka',company:'PetroKim AŞ',date:'2026-03-18',tests:5,customer:'Nigar Əliyeva',phone:'+994 70 555 44 33',email:'n.aliyeva@petrokim.az'},
+  'ORD-2603': {id:'ORD-2603',status:'done',name:'PVC Borular',company:'Bakı Plastik',date:'2026-03-18',tests:3,customer:'Kənan Hüseynov',phone:'+994 12 44 55 66',email:'k.huseynov@bakiplastic.az'},
+  'ORD-2604': {id:'ORD-2604',status:'accepted',name:'PE Qranulat',company:'PolyChem AŞ',date:'2026-03-17',tests:6,customer:'Aytən Musayeva',phone:'+994 22 33 44 55',email:'a.musayeva@polychem.az'},
+};
+
+const WAREHOUSE = {
+  'WAR-2601': {id:'WAR-2601',status:'warehouse',name:'HDPE boru və fitinqlər',company:'AzərbaycanPolimer',code:'ANB-2024-001',reason:'Müştəri şikayəti',contact:'Rəşad Əliyev',problem:'Müştəri bildirib ki, boruların uzanma göstəricisi standartdan aşağıdır və qoşulma yerlərində çatlar yaranır.'},
+  'WAR-2602': {id:'WAR-2602',status:'control',name:'PVC borular (ø50mm)',company:'Bakı Plastik',code:'ANB-2024-044',reason:'Keyfiyyət şübhəsi',contact:'Leyla Qasımova',problem:'Anbarda müayinə zamanı bəzi boruların rəngində dəyişiklik və səthində xırda çatlar müşahidə edilib.'},
+  'WAR-2603': {id:'WAR-2603',status:'testing',name:'Avtomobil təkəri',company:'AzRubber MMC',code:'ANB-2024-077',reason:'İxrac öncəsi nəzarət',contact:'Fərid Məmmədov',problem:'Avropa bazarına ixrac ediləcək təkərlər üçün ECE R30 standartına uyğunluq tələb olunur.',sinaq_qeydi:'Avtomobil təkərləri üçün ECE R30 standartına uyğunluq yoxlaması aparılmalıdır. Xüsusilə zərbə davamlılığı və yanmaya davamlılıq göstəricilərinə diqqət yetirilin.',sinaq_tests:['Zərbə davamlılığı','Yanmaya davamlılıq','Sıxlıq','Dartılma gərginliyi']},
+  'WAR-2604': {id:'WAR-2604',status:'report',name:'PE qranulatı',company:'PolyChem AŞ',code:'ANB-2024-055',reason:'Planlaşdırılmış yoxlama',contact:'Nigar Əliyeva',problem:'Üçaylıq planlaşdırılmış keyfiyyət yoxlaması çərçivəsində sınaq tələb olunur.',sinaq_qeydi:'Rutin üçaylıq yoxlama. PE qranulatının standart xüsusiyyətləri yoxlanılmalıdır.',sinaq_tests:['Axıcılıq indeksi MFR','Sıxlıq','Vicat yumşalma','Dartılma gərginliyi'],sinaq_neticeler:[{test:'Axıcılıq indeksi MFR',netice:'0.42 g/10dəq',norma:'0.3–0.5 g/10dəq',status:'ok'},{test:'Sıxlıq',netice:'0.960 g/cm³',norma:'0.955–0.965 g/cm³',status:'ok'},{test:'Vicat Yumşalma',netice:'127°C',norma:'≥ 120°C',status:'ok'}]},
+  'WAR-2605': {id:'WAR-2605',status:'done',name:'Rubber Compound',company:'AzRubber MMC',code:'ANB-2024-088',reason:'Sertifikasiya',contact:'Sevinc Qasımova',nezaret_qeydi:'Bütün sınaqlar müvəffəqiyyətlə tamamlandı. Məhsul standart tələblərə tam uyğundur və istehsal üçün tövsiyə olunur.',nezaret_netice:'qebul'}
+};
+
+const TEST_REQUESTS = {
+  'REQ-2601': {id:'REQ-2601',status:'pending',name:'PP Kopolimer test',requester:'Əhməd Babayev',company:'Texniki Nəzarət Şöbəsi',date:'2026-03-18',tests:3},
+  'REQ-2602': {id:'REQ-2602',status:'testing',name:'Rubber Compound analiz',requester:'Sevinc Qasımova',company:'AzRubber MMC',date:'2026-03-17',tests:4}
+};
+
+let isAdmin = false;
+let currentEditingId = null;
+
+// Navigation
+function showView(viewName) {
+  document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  
+  document.getElementById('view-' + viewName).classList.add('active');
+  document.getElementById('nav-' + viewName)?.classList.add('active');
+  
+  const titles = {
+    'dashboard': ['Dashboard', 'Sistemin ümumi vəziyyəti'],
+    'orders': ['Sifarişlər', 'Laboratoriya sifarişləri'],
+    'warehouse': ['Anbar Sorğuları', 'Anbar təftiş sorğuları'],
+    'inspection': ['Təftiş Nəzarəti', 'Texniki nəzarət prosesi'],
+    'results': ['Nəticələr', 'Tamamlanmış sınaq protokolları'],
+    'lab': ['Laboratoriya', 'Lab məlumatları və statistika'],
+    'admin': ['Admin Panel', 'Sistem idarəetməsi'],
+    'new-order': ['Yeni Sifariş', 'Laboratoriyaya sifariş yaradın']
+  };
+  
+  if (titles[viewName]) {
+    document.getElementById('pageTitle').textContent = titles[viewName][0];
+    document.getElementById('pageSubtitle').textContent = titles[viewName][1];
+  }
+  
+  if (viewName === 'orders') renderOrders();
+  if (viewName === 'warehouse') renderWarehouse();
+  if (viewName === 'inspection') renderInspection();
+  if (viewName === 'results') renderResults();
+  if (viewName === 'dashboard') renderDashboard();
+}
+
+// Render functions
+function renderOrders() {
+  const grid = document.getElementById('ordersGrid');
+  const html = Object.values(ORDERS).map(order => `
+    <div class="order-card" data-status="${order.status}" onclick="openOrder('${order.id}')">
+      <div class="card-header">
+        <div>
+          <div class="card-title">${order.name}</div>
+          <div class="card-id">${order.id}</div>
+        </div>
+        <div class="card-status st-${order.status}">${getStatusLabel(order.status)}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tags">
+          <div class="tag tag-product">Polimer Məhsul</div>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item"><span class="meta-icon">🏢</span>${order.company}</div>
+          <div class="meta-item"><span class="meta-icon">🧪</span>${order.tests} sınaq</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span>Tariх: ${order.date}</span>
+      </div>
+    </div>
+  `).join('');
+  grid.innerHTML = html;
+}
+
+function renderWarehouse() {
+  const grid = document.getElementById('warehouseGrid');
+  const html = Object.values(WAREHOUSE).map(item => `
+    <div class="order-card" data-status="${item.status}" onclick="openWarehouse('${item.id}')">
+      <div class="card-header">
+        <div>
+          <div class="card-title">${item.name}</div>
+          <div class="card-id">${item.id}</div>
+        </div>
+        <div class="card-status st-${item.status}">${getWarehouseStatusLabel(item.status)}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tags">
+          <div class="tag tag-warehouse">Anbar</div>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item"><span class="meta-icon">🏢</span>${item.company}</div>
+          <div class="meta-item"><span class="meta-icon">📦</span>${item.code}</div>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span>Səbəb: ${item.reason}</span>
+      </div>
+    </div>
+  `).join('');
+  grid.innerHTML = html;
+}
+
+function renderInspection() {
+  const grid = document.getElementById('inspectionGrid');
+  
+  // Combine warehouse and test requests for inspection view
+  let allItems = [];
+  
+  // Add warehouse items
+  Object.values(WAREHOUSE).forEach(item => {
+    allItems.push({
+      ...item,
+      type: 'warehouse',
+      displayName: item.name,
+      subtitle: `Anbar: ${item.code}`
+    });
+  });
+  
+  // Add test requests
+  Object.values(TEST_REQUESTS).forEach(item => {
+    allItems.push({
+      ...item,
+      type: 'test_request',
+      displayName: item.name,
+      subtitle: `Tələb edən: ${item.requester}`
+    });
+  });
+  
+  const html = allItems.map(item => `
+    <div class="order-card" data-status="${item.status}" onclick="${item.type === 'warehouse' ? 'openWarehouse' : 'openTestRequest'}('${item.id}')">
+      <div class="card-header">
+        <div>
+          <div class="card-title">${item.displayName}</div>
+          <div class="card-id">${item.id}</div>
+        </div>
+        <div class="card-status st-${item.status}">${item.type === 'warehouse' ? getWarehouseStatusLabel(item.status) : getStatusLabel(item.status)}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tags">
+          <div class="tag ${item.type === 'warehouse' ? 'tag-warehouse' : 'tag-test'}">
+            ${item.type === 'warehouse' ? 'Anbar Təftiş' : 'Sınaq Tələbi'}
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item"><span class="meta-icon">🏢</span>${item.company}</div>
+          <div class="meta-item"><span class="meta-icon">📅</span>${item.date}</div>
+          ${item.type === 'warehouse' ? 
+            `<div class="meta-item"><span class="meta-icon">📦</span>${item.code}</div>` : 
+            `<div class="meta-item"><span class="meta-icon">🧪</span>${item.tests} sınaq</div>`
+          }
+        </div>
+        <div style="font-size:12px;color:var(--ink3);margin-top:8px">${item.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  
+  grid.innerHTML = html;
+}
+
+function renderResults() {
+  const grid = document.getElementById('resultsGrid');
+  
+  // Show completed items only
+  const completedOrders = Object.values(ORDERS).filter(o => o.status === 'done');
+  const completedWarehouse = Object.values(WAREHOUSE).filter(w => w.status === 'done');
+  const completedTests = Object.values(TEST_REQUESTS).filter(t => t.status === 'done');
+  
+  let allCompleted = [];
+  
+  // Add completed orders
+  completedOrders.forEach(item => {
+    allCompleted.push({
+      ...item,
+      type: 'order',
+      displayName: item.name,
+      subtitle: `Müştəri: ${item.customer}`
+    });
+  });
+  
+  // Add completed warehouse
+  completedWarehouse.forEach(item => {
+    allCompleted.push({
+      ...item,
+      type: 'warehouse',
+      displayName: item.name,
+      subtitle: `Anbar: ${item.code}`
+    });
+  });
+  
+  // Add completed test requests
+  completedTests.forEach(item => {
+    allCompleted.push({
+      ...item,
+      type: 'test_request',
+      displayName: item.name,
+      subtitle: `Tələb edən: ${item.requester}`
+    });
+  });
+  
+  const html = allCompleted.map(item => `
+    <div class="order-card" onclick="${item.type === 'order' ? 'openOrder' : item.type === 'warehouse' ? 'openWarehouse' : 'openTestRequest'}('${item.id}')">
+      <div class="card-header">
+        <div>
+          <div class="card-title">${item.displayName}</div>
+          <div class="card-id">${item.id}</div>
+        </div>
+        <div class="card-status st-done">✅ Tamamlandı</div>
+      </div>
+      <div class="card-body">
+        <div class="card-tags">
+          <div class="tag ${item.type === 'order' ? 'tag-product' : item.type === 'warehouse' ? 'tag-warehouse' : 'tag-test'}">
+            ${item.type === 'order' ? 'Laboratoriya' : item.type === 'warehouse' ? 'Anbar Təftiş' : 'Sınaq Tələbi'}
+          </div>
+        </div>
+        <div class="card-meta">
+          <div class="meta-item"><span class="meta-icon">🏢</span>${item.company}</div>
+          <div class="meta-item"><span class="meta-icon">📅</span>${item.date}</div>
+          <div class="meta-item"><span class="meta-icon">📋</span>Protokol hazır</div>
+        </div>
+        <div style="font-size:12px;color:var(--ink3);margin-top:8px">${item.subtitle}</div>
+      </div>
+    </div>
+  `).join('');
+  
+  if (allCompleted.length === 0) {
+    grid.innerHTML = '<div style="text-align:center;padding:40px;color:var(--ink3)">Hələ tamamlanmış iş yoxdur</div>';
+  } else {
+    grid.innerHTML = html;
+  }
+}
+
+function openTestRequest(id) {
+  currentEditingId = id;
+  const item = TEST_REQUESTS[id];
+  document.getElementById('modalTitle').textContent = item.name;
+  document.getElementById('modalSubtitle').textContent = `Sınaq tələbi ${item.id}`;
+  
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-section">
+      <div class="section-title">Tələb Edən Məlumatları</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Status</div>
+          <div class="info-value st-${item.status}">${getStatusLabel(item.status)}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Tələb edən</div>
+          <div class="info-value">${item.requester}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Təşkilat</div>
+          <div class="info-value">${item.company}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Sınaq sayı</div>
+          <div class="info-value">${item.tests}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Tariх</div>
+          <div class="info-value">${item.date}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  let actions = '';
+  if (item.status === 'pending') {
+    actions = `
+      <button class="modal-btn btn-success" onclick="changeTestRequestStatus('accepted')">✓ Qəbul Et</button>
+      <button class="modal-btn btn-danger" onclick="changeTestRequestStatus('rejected')">✕ Rədd Et</button>
+    `;
+  } else if (item.status === 'accepted') {
+    actions = `
+      <button class="modal-btn btn-primary" onclick="changeTestRequestStatus('testing')">🔬 Sınağı Başlat</button>
+      <button class="modal-btn btn-secondary" onclick="changeTestRequestStatus('pending')">← Gözləməyə Qaytar</button>
+    `;
+  } else if (item.status === 'testing') {
+    actions = `
+      <button class="modal-btn btn-success" onclick="changeTestRequestStatus('done')">✅ Sınaq Tamamlandı</button>
+      <button class="modal-btn btn-secondary" onclick="changeTestRequestStatus('accepted')">← Qəbula Qaytar</button>
+    `;
+  }
+  
+  document.getElementById('modalActions').innerHTML = actions;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function changeTestRequestStatus(newStatus) {
+  TEST_REQUESTS[currentEditingId].status = newStatus;
+  const messages = {
+    pending: '📋 Gözləmə vəziyyətinə qaytarıldı',
+    accepted: '✅ Sınaq tələbi qəbul edildi',
+    rejected: '❌ Sınaq tələbi rədd edildi',
+    testing: '🔬 Sınaq başladıldı',
+    done: '✅ Sınaq tamamlandı'
+  };
+  showMessage(messages[newStatus]);
+  closeModal();
+  renderInspection();
+  renderResults();
+}
+
+function renderDashboard() {
+  // Recent orders
+  const recentHtml = Object.values(ORDERS).slice(0, 3).map(order => `
+    <div style="padding:8px 0;border-bottom:1px solid var(--bor);display:flex;justify-content:space-between;cursor:pointer" onclick="openOrder('${order.id}')">
+      <span>${order.name}</span>
+      <span class="st-${order.status}">${getStatusLabel(order.status)}</span>
+    </div>
+  `).join('');
+  document.getElementById('recentOrders').innerHTML = recentHtml;
+
+  // Active inspections
+  const inspectHtml = Object.values(WAREHOUSE).slice(0, 3).map(item => `
+    <div style="padding:8px 0;border-bottom:1px solid var(--bor);display:flex;justify-content:space-between;cursor:pointer" onclick="openWarehouse('${item.id}')">
+      <span>${item.name}</span>
+      <span class="st-${item.status}">${getWarehouseStatusLabel(item.status)}</span>
+    </div>
+  `).join('');
+  document.getElementById('activeInspections').innerHTML = inspectHtml;
+  
+  // Update stats
+  updateStats();
+}
+
+function updateStats() {
+  const allOrders = Object.values(ORDERS);
+  const allWarehouse = Object.values(WAREHOUSE);
+  const allTestReqs = Object.values(TEST_REQUESTS);
+  
+  const pending = allOrders.filter(o => o.status === 'pending').length + 
+                 allWarehouse.filter(w => w.status === 'warehouse').length + 
+                 allTestReqs.filter(t => t.status === 'pending').length;
+                 
+  const testing = allOrders.filter(o => o.status === 'testing').length + 
+                 allWarehouse.filter(w => w.status === 'testing').length + 
+                 allTestReqs.filter(t => t.status === 'testing').length;
+                 
+  const done = allOrders.filter(o => o.status === 'done').length + 
+              allWarehouse.filter(w => w.status === 'done').length + 
+              allTestReqs.filter(t => t.status === 'done').length;
+              
+  const rejected = allOrders.filter(o => o.status === 'rejected').length + 
+                  allTestReqs.filter(t => t.status === 'rejected').length;
+  
+  document.querySelector('.stat-card:nth-child(1) .stat-number').textContent = pending;
+  document.querySelector('.stat-card:nth-child(2) .stat-number').textContent = testing;
+  document.querySelector('.stat-card:nth-child(3) .stat-number').textContent = done;
+  document.querySelector('.stat-card:nth-child(4) .stat-number').textContent = rejected;
+}
+
+// Utility functions
+function getStatusLabel(status) {
+  const labels = {pending:'Gözləyir',accepted:'Qəbul',testing:'Sınaqda',done:'Hazır',rejected:'Rədd'};
+  return labels[status] || status;
+}
+
+function getWarehouseStatusLabel(status) {
+  const labels = {warehouse:'Anbarda',control:'T.Nəzarət',testing:'Sınaqda',report:'Hesabat',done:'Tamamlandı'};
+  return labels[status] || status;
+}
+
+// Filtering
+function filterOrders(status, btn) {
+  document.querySelectorAll('#orderFilters .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  document.querySelectorAll('#ordersGrid .order-card').forEach(card => {
+    card.style.display = (status === 'all' || card.dataset.status === status) ? '' : 'none';
+  });
+}
+
+function filterWarehouse(status, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  
+  document.querySelectorAll('#warehouseGrid .order-card').forEach(card => {
+    card.style.display = (status === 'all' || card.dataset.status === status) ? '' : 'none';
+  });
+}
+
+// Modal functions
+function openOrder(id) {
+  currentEditingId = id;
+  const order = ORDERS[id];
+  document.getElementById('modalTitle').textContent = order.name;
+  document.getElementById('modalSubtitle').textContent = `Sifariş ${order.id}`;
+  
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-section">
+      <div class="section-title">Sifarişçi Məlumatları</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Status</div>
+          <div class="info-value st-${order.status}">${getStatusLabel(order.status)}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Müştəri</div>
+          <div class="info-value">${order.customer}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Şirkət</div>
+          <div class="info-value">${order.company}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Telefon</div>
+          <div class="info-value">${order.phone}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">E-poçt</div>
+          <div class="info-value">${order.email}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Sınaq sayı</div>
+          <div class="info-value">${order.tests}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Tariх</div>
+          <div class="info-value">${order.date}</div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Build actions based on status
+  let actions = '';
+  if (order.status === 'pending') {
+    actions = `
+      <button class="modal-btn btn-success" onclick="changeOrderStatus('accepted')">✓ Qəbul Et</button>
+      <button class="modal-btn btn-danger" onclick="changeOrderStatus('rejected')">✕ Rədd Et</button>
+    `;
+  } else if (order.status === 'accepted') {
+    actions = `
+      <button class="modal-btn btn-primary" onclick="changeOrderStatus('testing')">🔬 Sınağı Başlat</button>
+      <button class="modal-btn btn-secondary" onclick="changeOrderStatus('pending')">← Gözləməyə Qaytar</button>
+    `;
+  } else if (order.status === 'testing') {
+    actions = `
+      <button class="modal-btn btn-success" onclick="changeOrderStatus('done')">✅ Sınaq Tamamlandı</button>
+      <button class="modal-btn btn-secondary" onclick="changeOrderStatus('accepted')">← Qəbula Qaytar</button>
+    `;
+  } else if (order.status === 'done') {
+    actions = `
+      <button class="modal-btn btn-primary" onclick="downloadProtocol()">📄 Protokolu Yüklə</button>
+      <button class="modal-btn btn-secondary" onclick="changeOrderStatus('testing')">← Sınağa Qaytar</button>
+    `;
+  } else if (order.status === 'rejected') {
+    actions = `
+      <button class="modal-btn btn-success" onclick="changeOrderStatus('pending')">🔄 Yenidən Qəbul Prosesi</button>
+    `;
+  }
+  
+  document.getElementById('modalActions').innerHTML = actions;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+function changeOrderStatus(newStatus) {
+  ORDERS[currentEditingId].status = newStatus;
+  const messages = {
+    pending: '📋 Gözləmə vəziyyətinə qaytarıldı',
+    accepted: '✅ Sifariş qəbul edildi',
+    rejected: '❌ Sifariş rədd edildi',
+    testing: '🔬 Sınaq başladıldı',
+    done: '✅ Sınaq tamamlandı'
+  };
+  showMessage(messages[newStatus]);
+  closeModal();
+  renderOrders();
+  renderDashboard();
+}
+
+function downloadProtocol() {
+  showMessage('📄 Sınaq protokolu PDF olaraq yüklənir...');
+  closeModal();
+}
+
+function openWarehouse(id) {
+  currentEditingId = id;
+  const item = WAREHOUSE[id];
+  document.getElementById('modalTitle').textContent = item.name;
+  document.getElementById('modalSubtitle').textContent = `Anbar sorğusu ${item.id}`;
+  
+  // Build sections based on status
+  let sections = `
+    <div class="modal-section">
+      <div class="section-title">Anbar Məlumatları</div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Status</div>
+          <div class="info-value st-${item.status}">${getWarehouseStatusLabel(item.status)}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Şirkət</div>
+          <div class="info-value">${item.company}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Anbar kodu</div>
+          <div class="info-value">${item.code}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Məsul şəxs</div>
+          <div class="info-value">${item.contact}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Səbəb</div>
+          <div class="info-value">${item.reason}</div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="section-title">Problem Təfərrüatı</div>
+      <div style="background:#fdeaea;border:1px solid #f0c0c0;border-radius:8px;padding:12px;font-size:13px;color:var(--dan)">
+        ${item.problem}
+      </div>
+    </div>
+  `;
+  
+  // Add technical control notes if exists
+  if (item.sinaq_qeydi) {
+    sections += `
+      <div class="modal-section">
+        <div class="section-title">Texniki Nəzarət Qeydi</div>
+        <div style="background:#e8f0fe;border:1px solid #90c4e8;border-radius:8px;padding:12px;font-size:13px;color:var(--inf)">
+          ${item.sinaq_qeydi}
+        </div>
+      </div>
+    `;
+  }
+  
+  // Add test list if exists
+  if (item.sinaq_tests && item.sinaq_tests.length > 0) {
+    const testsHtml = item.sinaq_tests.map(test => 
+      `<div style="padding:6px 12px;background:var(--sur2);border:1px solid var(--bor);border-radius:6px;margin:4px 0;font-size:12px">🔬 ${test}</div>`
+    ).join('');
+    sections += `
+      <div class="modal-section">
+        <div class="section-title">Tələb Olunan Sınaqlar</div>
+        ${testsHtml}
+      </div>
+    `;
+  }
+  
+  // Add test results if exists
+  if (item.sinaq_neticeler && item.sinaq_neticeler.length > 0) {
+    const resultsHtml = item.sinaq_neticeler.map(result => 
+      `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--sur2);border:1px solid var(--bor);border-radius:6px;margin:4px 0;font-size:12px">
+        <div><strong>${result.test}:</strong> ${result.netice}</div>
+        <div style="color:${result.status==='ok'?'var(--suc)':result.status==='fail'?'var(--dan)':'var(--war)'}">
+          ${result.status==='ok'?'✅':result.status==='fail'?'❌':'⚠️'} ${result.norma}
+        </div>
+      </div>`
+    ).join('');
+    sections += `
+      <div class="modal-section">
+        <div class="section-title">Sınaq Nəticələri</div>
+        ${resultsHtml}
+      </div>
+    `;
+  }
+  
+  // Add control report notes if exists
+  if (item.nezaret_qeydi) {
+    sections += `
+      <div class="modal-section">
+        <div class="section-title">Nəzarət Aktı Qeydi</div>
+        <div style="background:#e8f5ed;border:1px solid #90d0a8;border-radius:8px;padding:12px;font-size:13px;color:var(--suc)">
+          ${item.nezaret_qeydi}
+        </div>
+      </div>
+    `;
+  }
+  
+  document.getElementById('modalBody').innerHTML = sections;
+  
+  // Build action buttons based on status
+  let actions = '';
+  if (item.status === 'warehouse') {
+    actions = '<button class="modal-btn btn-success" onclick="moveToTechnicalControl()">📋 Texniki Nəzarətə Göndər</button>';
+  } else if (item.status === 'control') {
+    actions = `
+      <button class="modal-btn btn-primary" onclick="openTestRequestForm()">🧪 Sınaq Tələbi Hazırla</button>
+      <button class="modal-btn btn-secondary" onclick="changeWarehouseStatus('warehouse')">← Anbara Qaytar</button>
+    `;
+  } else if (item.status === 'testing') {
+    actions = `
+      <button class="modal-btn btn-success" onclick="changeWarehouseStatus('report')">📋 Sınaq Tamamlandı</button>
+      <button class="modal-btn btn-secondary" onclick="changeWarehouseStatus('control')">← T.Nəzarətə Qaytar</button>
+    `;
+  } else if (item.status === 'report') {
+    actions = `
+      <button class="modal-btn btn-primary" onclick="openControlReportForm()">📤 Nəzarət Aktı Hazırla</button>
+      <button class="modal-btn btn-secondary" onclick="changeWarehouseStatus('testing')">← Sınağa Qaytar</button>
+    `;
+  } else if (item.status === 'done') {
+    actions = `
+      <button class="modal-btn btn-success" onclick="showMessage('✅ İş tamamlanıb')">✅ Tamamlanıb</button>
+      <button class="modal-btn btn-secondary" onclick="changeWarehouseStatus('report')">← Hesabata Qaytar</button>
+    `;
+  }
+  
+  document.getElementById('modalActions').innerHTML = actions;
+  document.getElementById('modalOverlay').classList.add('active');
+}
+
+// Test Request Form
+function openTestRequestForm() {
+  const item = WAREHOUSE[currentEditingId];
+  document.getElementById('modalTitle').textContent = 'Sınaq Tələbi Hazırlama';
+  document.getElementById('modalSubtitle').textContent = `${item.name} üçün texniki nəzarət qeydi`;
+  
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-section">
+      <div class="section-title">Anbar Sorğusu Məlumatları</div>
+      <div style="background:var(--sur2);border:1px solid var(--bor);border-radius:8px;padding:12px;font-size:12px;color:var(--ink2)">
+        <strong>${item.name}</strong> (${item.code})<br>
+        Müəssisə: ${item.company}<br>
+        Problem: ${item.reason} — ${item.problem}<br>
+        Məsul: ${item.contact}
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="section-title">Texniki Mütəxəssis Qeydi</div>
+      <textarea id="testNotes" style="width:100%;height:100px;padding:12px;border:1px solid var(--bor2);border-radius:8px;font-size:13px;resize:vertical" placeholder="Bu məhsula görə hansı sınaqların aparılması lazımdır və niyə?"></textarea>
+    </div>
+    <div class="modal-section">
+      <div class="section-title">Tələb Olunan Sınaqlar</div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:8px">
+        <label style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--sur2);border-radius:6px;cursor:pointer">
+          <input type="checkbox" checked> Dartılma gərginliyi (ISO 527)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--sur2);border-radius:6px;cursor:pointer">
+          <input type="checkbox" checked> Uzanma (Elongation)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--sur2);border-radius:6px;cursor:pointer">
+          <input type="checkbox" checked> Şorliyer D sərtliyi
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--sur2);border-radius:6px;cursor:pointer">
+          <input type="checkbox"> Zərbə davamlılığı (Charpy)
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--sur2);border-radius:6px;cursor:pointer">
+          <input type="checkbox"> Vicat yumşalma temperaturu
+        </label>
+        <label style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--sur2);border-radius:6px;cursor:pointer">
+          <input type="checkbox"> Sıxlıq
+        </label>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="section-title">Xüsusi Təlimatlar</div>
+      <textarea id="specialInstructions" style="width:100%;height:80px;padding:12px;border:1px solid var(--bor2);border-radius:8px;font-size:13px;resize:vertical" placeholder="Laboratoriyaya xüsusi təlimatlar, diqqət ediləcək nöqtələr..."></textarea>
+    </div>
+  `;
+  
+  document.getElementById('modalActions').innerHTML = `
+    <button class="modal-btn btn-primary" onclick="submitTestRequest()">Sınaq Tələbini Laboratoriyaya Göndər →</button>
+    <button class="modal-btn btn-secondary" onclick="openWarehouse(currentEditingId)">← Geri</button>
+  `;
+}
+
+// Control Report Form
+function openControlReportForm() {
+  const item = WAREHOUSE[currentEditingId];
+  document.getElementById('modalTitle').textContent = 'Nəzarət Aktı Hazırlama';
+  document.getElementById('modalSubtitle').textContent = `${item.name} üçün sınaq nəticələri`;
+  
+  document.getElementById('modalBody').innerHTML = `
+    <div class="modal-section">
+      <div class="section-title">Sınaq Nəticələri Daxil Etmə</div>
+      <div style="display:grid;gap:12px">
+        <div style="background:var(--sur2);border:1px solid var(--bor);border-radius:8px;padding:12px">
+          <label style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:6px;display:block">Dartılma gərginliyi</label>
+          <input id="tensileResult" style="width:48%;padding:8px;border:1px solid var(--bor2);border-radius:6px;font-size:12px;margin-right:4%" placeholder="məs. 54.2 MPa">
+          <input id="tensileNorm" style="width:48%;padding:8px;border:1px solid var(--bor2);border-radius:6px;font-size:12px" placeholder="Norma: ≥ 50 MPa">
+        </div>
+        <div style="background:var(--sur2);border:1px solid var(--bor);border-radius:8px;padding:12px">
+          <label style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:6px;display:block">Uzanma (Elongation)</label>
+          <input id="elongationResult" style="width:48%;padding:8px;border:1px solid var(--bor2);border-radius:6px;font-size:12px;margin-right:4%" placeholder="məs. 62.5 %">
+          <input id="elongationNorm" style="width:48%;padding:8px;border:1px solid var(--bor2);border-radius:6px;font-size:12px" placeholder="Norma: ≥ 80 %">
+        </div>
+        <div style="background:var(--sur2);border:1px solid var(--bor);border-radius:8px;padding:12px">
+          <label style="font-size:11px;font-weight:600;color:var(--ink3);margin-bottom:6px;display:block">Şorliyer D Sərtliyi</label>
+          <input id="hardnessResult" style="width:48%;padding:8px;border:1px solid var(--bor2);border-radius:6px;font-size:12px;margin-right:4%" placeholder="məs. 85 Shore D">
+          <input id="hardnessNorm" style="width:48%;padding:8px;border:1px solid var(--bor2);border-radius:6px;font-size:12px" placeholder="Norma: 80–90 Shore D">
+        </div>
+      </div>
+    </div>
+    <div class="modal-section">
+      <div class="section-title">Ümumi Qiymətləndirmə</div>
+      <select id="overallResult" style="width:100%;padding:12px;border:1px solid var(--bor2);border-radius:8px;font-size:13px;margin-bottom:12px">
+        <option value="">Nəticəni seçin</option>
+        <option value="qebul">✅ QƏBUL — Standarta uyğundur</option>
+        <option value="redd">❌ RƏDD — Standarta uyğun deyil</option>
+        <option value="mehdud">⚠️ MƏHDUD QƏBUL — Şərtli uyğundur</option>
+      </select>
+      <textarea id="controlNotes" style="width:100%;height:100px;padding:12px;border:1px solid var(--bor2);border-radius:8px;font-size:13px;resize:vertical" placeholder="Nəzarət nəticələri haqqında ətraflı qeyd..."></textarea>
+    </div>
+    <div class="modal-section">
+      <div class="section-title">Tövsiyələr</div>
+      <textarea id="recommendations" style="width:100%;height:80px;padding:12px;border:1px solid var(--bor2);border-radius:8px;font-size:13px;resize:vertical" placeholder="Müəssisəyə tövsiyələr, düzəliş tədbirləri..."></textarea>
+    </div>
+  `;
+  
+  document.getElementById('modalActions').innerHTML = `
+    <button class="modal-btn btn-primary" onclick="submitControlReport()">Nəzarət Aktını Hazırla və Göndər →</button>
+    <button class="modal-btn btn-secondary" onclick="openWarehouse(currentEditingId)">← Geri</button>
+  `;
+}
+
+// Form submission functions
+function submitTestRequest() {
+  const notes = document.getElementById('testNotes').value.trim();
+  const instructions = document.getElementById('specialInstructions').value.trim();
+  
+  if (!notes) {
+    showMessage('⚠ Texniki nəzarət qeydi məcburidir');
+    return;
+  }
+  
+  // Get selected tests
+  const checkboxes = document.querySelectorAll('#modalBody input[type="checkbox"]:checked');
+  const selectedTests = Array.from(checkboxes).map(cb => cb.parentElement.textContent.trim());
+  
+  // Update warehouse record
+  const item = WAREHOUSE[currentEditingId];
+  item.sinaq_qeydi = notes;
+  item.sinaq_tests = selectedTests;
+  item.sinaq_telimat = instructions;
+  item.status = 'testing';
+  
+  showMessage('✅ Sınaq tələbi hazırlandı və laboratoriyaya göndərildi');
+  closeModal();
+  renderWarehouse();
+}
+
+function submitControlReport() {
+  const overallResult = document.getElementById('overallResult').value;
+  const controlNotes = document.getElementById('controlNotes').value.trim();
+  const recommendations = document.getElementById('recommendations').value.trim();
+  
+  if (!overallResult || !controlNotes) {
+    showMessage('⚠ Ümumi qiymətləndirmə və qeyd məcburidir');
+    return;
+  }
+  
+  // Collect test results
+  const results = [];
+  if (document.getElementById('tensileResult').value) {
+    results.push({
+      test: 'Dartılma gərginliyi',
+      netice: document.getElementById('tensileResult').value,
+      norma: document.getElementById('tensileNorm').value,
+      status: overallResult === 'qebul' ? 'ok' : overallResult === 'redd' ? 'fail' : 'warn'
+    });
+  }
+  if (document.getElementById('elongationResult').value) {
+    results.push({
+      test: 'Uzanma (Elongation)',
+      netice: document.getElementById('elongationResult').value,
+      norma: document.getElementById('elongationNorm').value,
+      status: overallResult === 'qebul' ? 'ok' : overallResult === 'redd' ? 'fail' : 'warn'
+    });
+  }
+  if (document.getElementById('hardnessResult').value) {
+    results.push({
+      test: 'Şorliyer D Sərtliyi',
+      netice: document.getElementById('hardnessResult').value,
+      norma: document.getElementById('hardnessNorm').value,
+      status: overallResult === 'qebul' ? 'ok' : overallResult === 'redd' ? 'fail' : 'warn'
+    });
+  }
+  
+  // Update warehouse record
+  const item = WAREHOUSE[currentEditingId];
+  item.nezaret_qeydi = controlNotes;
+  item.nezaret_netice = overallResult;
+  item.nezaret_tovsiye = recommendations;
+  item.sinaq_neticeler = results;
+  item.status = 'done';
+  
+  showMessage('✅ Nəzarət aktı hazırlandı və göndərildi');
+  closeModal();
+  renderWarehouse();
+}
+
+function changeWarehouseStatus(newStatus) {
+  WAREHOUSE[currentEditingId].status = newStatus;
+  const messages = {
+    warehouse: '📦 Anbara qaytarıldı',
+    control: '📋 Texniki nəzarətə göndərildi',
+    testing: '🧪 Sınaq mərhələsinə keçirildi',
+    report: '📋 Hesabat mərhələsinə keçirildi',
+    done: '✅ Tamamlandı'
+  };
+  showMessage(messages[newStatus]);
+  closeModal();
+  renderWarehouse();
+}
+
+function moveToTechnicalControl() {
+  changeWarehouseStatus('control');
+}
+
+function closeModal(event) {
+  if (!event || event.target === document.getElementById('modalOverlay')) {
+    document.getElementById('modalOverlay').classList.remove('active');
+  }
+}
+
+// Admin functions
+function openLogin() {
+  if (isAdmin) {
+    showView('admin');
+    return;
+  }
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').style.display = 'none';
+}
+
+function cancelLogin() {
+  document.getElementById('loginScreen').classList.add('hidden');
+}
+
+function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  
+  if (user === 'admin' && pass === 'polytest2024') {
+    isAdmin = true;
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminBar').classList.add('active');
+    document.getElementById('nav-admin').style.display = '';
+    document.getElementById('adminToggle').classList.add('active');
+    document.getElementById('adminToggle').textContent = 'Admin Panel';
+    document.querySelector('.admin-user').textContent = '🔐 Admin istifadəçi';
+    showMessage('Admin kimi daxil oldunuz');
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+    document.getElementById('loginPass').value = '';
+  }
+}
+
+function logout() {
+  isAdmin = false;
+  document.getElementById('adminBar').classList.remove('active');
+  document.getElementById('nav-admin').style.display = 'none';
+  document.getElementById('adminToggle').classList.remove('active');
+  document.getElementById('adminToggle').textContent = 'Admin Girişi';
+  document.querySelector('.admin-user').textContent = '👤 Qonaq istifadəçi';
+  showView('dashboard');
+  showMessage('Admin rejimindən çıxıldı');
+}
+
+// Utility
+function showMessage(msg) {
+  alert(msg); // Simple message - could be replaced with toast
+}
+
+function showNotifications() {
+  showMessage('🔔 3 yeni bildiriş var');
+}
+
+// Initialize
+showView('dashboard');
+</script>
+</body>
+</html>
